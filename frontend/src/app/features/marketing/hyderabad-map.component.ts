@@ -1,6 +1,7 @@
 import { DecimalPipe } from "@angular/common";
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, inject } from "@angular/core";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
+import { getDisplayRouteLabel } from "../../shared/address-display.util";
 
 export interface RouteMetrics {
   distanceKm: number;
@@ -55,9 +56,9 @@ interface BBox {
         </span>
       </div>
 
-      <figcaption class="map-caption">
+      <figcaption class="map-caption mapRouteCard">
         <p class="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-600">Hyderabad route</p>
-        <h2 class="mt-2 text-lg font-semibold tracking-[-0.03em] text-slate-950 sm:text-xl">{{ routeLabel }}</h2>
+        <h2 class="mapRouteAddress mt-2 text-lg font-semibold tracking-[-0.03em] text-slate-950 sm:text-xl">{{ routeLabel }}</h2>
         <p class="mt-1 text-sm text-slate-500">
           @if (metrics) {
             {{ metrics.distanceKm | number:'1.0-1' }} km &bull; about {{ metrics.durationMin }} min
@@ -111,9 +112,7 @@ export class HyderabadMapComponent implements OnChanges {
   }
 
   get routeLabel(): string {
-    const pickup = this.from.trim() || "Pickup";
-    const drop = this.to.trim() || "Destination";
-    return `${pickup} to ${drop}`;
+    return getDisplayRouteLabel(this.from, this.to);
   }
 
   private scheduleRouteUpdate(): void {

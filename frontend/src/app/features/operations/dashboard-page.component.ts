@@ -54,7 +54,7 @@ import { PlatformDataService } from "../../core/platform-data.service";
         <table mat-table [dataSource]="data.bookings" class="w-full">
           <ng-container matColumnDef="id"><th mat-header-cell *matHeaderCellDef>Booking</th><td mat-cell *matCellDef="let row">{{ row.id }}</td></ng-container>
           <ng-container matColumnDef="department"><th mat-header-cell *matHeaderCellDef>Department</th><td mat-cell *matCellDef="let row">{{ row.department }}</td></ng-container>
-          <ng-container matColumnDef="route"><th mat-header-cell *matHeaderCellDef>Route</th><td mat-cell *matCellDef="let row">{{ row.route }}</td></ng-container>
+          <ng-container matColumnDef="route"><th mat-header-cell *matHeaderCellDef>Route</th><td mat-cell *matCellDef="let row"><span class="addressSingleLine">{{ row.route }}</span></td></ng-container>
           <ng-container matColumnDef="passengers"><th mat-header-cell *matHeaderCellDef>Passengers</th><td mat-cell *matCellDef="let row">{{ row.passengers }}</td></ng-container>
           <ng-container matColumnDef="status"><th mat-header-cell *matHeaderCellDef>Status</th><td mat-cell *matCellDef="let row">{{ row.status }}</td></ng-container>
           <tr mat-header-row *matHeaderRowDef="columns"></tr>

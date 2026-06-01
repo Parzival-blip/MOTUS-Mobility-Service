@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
+import { getDisplayAddress } from "../../shared/address-display.util";
+import { PhoneNumberInputComponent } from "../../shared/phone-number-input.component";
 import { RouteMetrics } from "./hyderabad-map.component";
 
 export interface BookingRouteState {
@@ -28,7 +30,7 @@ interface FareEstimate {
 @Component({
   selector: "motus-booking-card",
   standalone: true,
-  imports: [ReactiveFormsModule, MatButtonModule],
+  imports: [ReactiveFormsModule, MatButtonModule, PhoneNumberInputComponent],
   template: `
     <form
       class="booking-card"
@@ -45,9 +47,11 @@ interface FareEstimate {
         <label class="premium-field">
           <span>Pickup</span>
           <input
+            class="premium-address-field"
             formControlName="from"
             placeholder="Gachibowli, Hyderabad"
             autocomplete="street-address"
+            spellcheck="false"
             (input)="emitState()"
           >
           @if (showFieldError("from")) {
@@ -58,9 +62,11 @@ interface FareEstimate {
         <label class="premium-field">
           <span>Destination</span>
           <input
+            class="premium-address-field"
             formControlName="to"
             placeholder="Rajiv Gandhi International Airport"
             autocomplete="street-address"
+            spellcheck="false"
             (input)="emitState()"
           >
           @if (showFieldError("to")) {
@@ -74,18 +80,28 @@ interface FareEstimate {
           [attr.inert]="expanded ? null : ''"
         >
           <div class="grid gap-3 pt-1">
-            <label class="premium-field">
-              <span>Ride type</span>
-              <select formControlName="rideType" (change)="emitState()">
-                <option value="">Select ride type</option>
-                @for (ride of availableRideTypes; track ride.value) {
-                  <option [value]="ride.value">{{ ride.label }}</option>
+            @if (isAirportRoute) {
+              <div class="premium-field">
+                <span>Ride type</span>
+                <div class="premium-ride-indicator" aria-label="Airport Transfer ride type selected">
+                  <span class="premium-ride-indicator-icon" aria-hidden="true">&#9992;</span>
+                  <span class="premium-ride-indicator-text">Airport Transfer</span>
+                </div>
+              </div>
+            } @else {
+              <label class="premium-field">
+                <span>Ride type</span>
+                <select formControlName="rideType" (change)="emitState()">
+                  <option value="">Select ride type</option>
+                  @for (ride of availableRideTypes; track ride.value) {
+                    <option [value]="ride.value">{{ ride.label }}</option>
+                  }
+                </select>
+                @if (showFieldError("rideType")) {
+                  <small>Ride type is required.</small>
                 }
-              </select>
-              @if (showFieldError("rideType")) {
-                <small>Ride type is required.</small>
-              }
-            </label>
+              </label>
+            }
 
             <label class="premium-field">
               <span>Full name</span>
@@ -97,9 +113,9 @@ interface FareEstimate {
 
             <label class="premium-field">
               <span>Phone number</span>
-              <input formControlName="phone" placeholder="10 digit mobile number" inputmode="numeric" autocomplete="tel">
+              <motus-phone-number-input formControlName="phone" />
               @if (showFieldError("phone")) {
-                <small>Enter a valid 10 digit phone number.</small>
+                <small>Enter a valid phone number.</small>
               }
             </label>
           </div>
@@ -124,17 +140,22 @@ interface FareEstimate {
         @if (fareEstimate) {
           <section class="fare-card" aria-live="polite">
             <div class="flex items-start justify-between gap-4">
-              <div>
+              <div class="routeContent">
                 <p class="text-sm font-semibold text-slate-500">Estimated Fare</p>
-                <p class="mt-1 text-3xl font-semibold tracking-[-0.05em] text-slate-950">{{ fareEstimate.range }}</p>
+                <p class="mt-1 text-3xl font-semibold leading-tight tracking-[-0.05em] text-slate-950">{{ fareEstimate.range }}</p>
               </div>
-              <span class="rounded-full bg-cyan-50 px-3 py-1 text-xs font-semibold text-cyan-700">{{ fareEstimate.label }}</span>
+              <span class="shrink-0 rounded-full bg-cyan-50 px-3 py-1 text-xs font-semibold text-cyan-700">{{ fareEstimate.label }}</span>
             </div>
-            <p class="mt-3 flex items-center gap-2 text-sm font-semibold text-slate-500">
-              <span class="min-w-0 truncate">{{ fareEstimate.from }}</span>
-              <span class="text-slate-300" aria-hidden="true">&rarr;</span>
-              <span class="min-w-0 truncate">{{ fareEstimate.to }}</span>
-            </p>
+            <div class="fare-route" aria-label="Estimated route">
+              <div class="fare-route-stop">
+                <span class="fare-route-label">From</span>
+                <p class="fare-route-address fareAddress">{{ fareEstimate.from }}</p>
+              </div>
+              <div class="fare-route-stop">
+                <span class="fare-route-label">To</span>
+                <p class="fare-route-address fareAddress">{{ fareEstimate.to }}</p>
+              </div>
+            </div>
             <p class="mt-2 text-sm font-medium text-slate-600">
               {{ fareEstimate.distance }} &bull; {{ fareEstimate.duration }} &bull; {{ fareEstimate.category }}
             </p>
@@ -171,7 +192,7 @@ export class BookingCardComponent implements OnChanges {
     to: ["", Validators.required],
     rideType: ["", Validators.required],
     name: ["", Validators.required],
-    phone: ["", [Validators.required, Validators.pattern(/^[0-9]{10}$/)]]
+    phone: ["", Validators.required]
   });
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -186,12 +207,12 @@ export class BookingCardComponent implements OnChanges {
   get availableRideTypes(): RideOption[] {
     const { from, to } = this.form.getRawValue();
     const text = `${from} ${to}`.toLowerCase();
-    const airport = this.isAirportText(text) || Boolean(this.routeMetrics?.airportInvolved);
+    const airport = this.isAirportRoute;
     const distanceKm = this.routeMetrics?.distanceKm ?? this.estimateFallbackDistance(text);
     const options: RideOption[] = [];
 
     if (airport) {
-      options.push(this.rideTypes.find((ride) => ride.value === "airport-transfer")!);
+      return [this.rideTypes.find((ride) => ride.value === "airport-transfer")!];
     }
 
     if (distanceKm > 40) {
@@ -213,6 +234,12 @@ export class BookingCardComponent implements OnChanges {
     return options.length ? this.uniqueRideOptions(options) : this.rideTypes.filter((ride) => ride.value !== "city-ride");
   }
 
+  get isAirportRoute(): boolean {
+    const { from, to } = this.form.getRawValue();
+    const metricsMatch = this.routeMetrics?.from === from && this.routeMetrics?.to === to;
+    return this.isAirportText(`${from} ${to}`.toLowerCase()) || Boolean(metricsMatch && this.routeMetrics?.airportInvolved);
+  }
+
   expandBooking(): void {
     this.submitted = false;
     this.form.controls.from.markAsTouched();
@@ -230,6 +257,7 @@ export class BookingCardComponent implements OnChanges {
   }
 
   findCabs(): void {
+    this.syncRideTypeWithContext();
     this.form.markAllAsTouched();
     this.showFormError = this.form.invalid;
     this.submitted = !this.form.invalid;
@@ -254,6 +282,14 @@ export class BookingCardComponent implements OnChanges {
 
   private syncRideTypeWithContext(): void {
     const current = this.form.controls.rideType.value;
+
+    if (this.isAirportRoute) {
+      if (current !== "airport-transfer") {
+        this.form.controls.rideType.setValue("airport-transfer");
+      }
+      return;
+    }
+
     const allowed = this.availableRideTypes.map((ride) => ride.value);
 
     if (current && !allowed.includes(current as RideOption["value"])) {
@@ -268,8 +304,8 @@ export class BookingCardComponent implements OnChanges {
     const durationMin = this.routeMetrics?.durationMin ?? Math.max(18, Math.round(distanceKm * 2.2));
     const roundedKm = Math.max(1, Math.round(distanceKm));
     const route = {
-      from: this.compactLocation(from, "Pickup"),
-      to: this.compactLocation(to, "Destination")
+      from: getDisplayAddress(from, "Pickup"),
+      to: getDisplayAddress(to, "Destination")
     };
 
     if (rideType === "bulk-booking") {
@@ -342,11 +378,6 @@ export class BookingCardComponent implements OnChanges {
 
   private formatRupee(value: number): string {
     return `Rs. ${Math.round(value).toLocaleString("en-IN")}`;
-  }
-
-  private compactLocation(value: string, fallback: string): string {
-    const normalized = value.trim().replace(/\s+/g, " ");
-    return normalized || fallback;
   }
 
   private uniqueRideOptions(options: RideOption[]): RideOption[] {

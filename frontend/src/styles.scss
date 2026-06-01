@@ -71,7 +71,39 @@ a {
   box-shadow: 0 28px 90px rgba(15, 23, 42, 0.1);
 }
 
+.routeContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.addressClamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.5;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.addressSingleLine {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mat-column-route {
+  max-width: 18rem;
+  min-width: 0;
+}
+
 .booking-card {
+  width: 100%;
+  min-width: 0;
   border: 1px solid rgba(255, 255, 255, 0.8);
   border-radius: 28px;
   background: rgba(255, 255, 255, 0.94);
@@ -82,6 +114,7 @@ a {
 
 .premium-field {
   display: grid;
+  min-width: 0;
   gap: 8px;
   color: var(--motus-muted);
   font-size: 0.78rem;
@@ -93,9 +126,11 @@ a {
 }
 
 .premium-field input,
+.premium-field textarea,
 .premium-field select {
   min-height: 56px;
   width: 100%;
+  min-width: 0;
   border: 1px solid transparent;
   border-radius: 18px;
   background: #f4f6f8;
@@ -111,12 +146,37 @@ a {
     transform 180ms ease;
 }
 
+.premium-address-field {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.premium-address-field:focus {
+  text-overflow: clip;
+}
+
+.premium-field textarea {
+  field-sizing: content;
+  max-height: 7.5rem;
+  padding-block: 16px;
+  line-height: 1.35;
+  overflow-x: hidden;
+  overflow-y: auto;
+  resize: none;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
 .premium-field input:hover,
+.premium-field textarea:hover,
 .premium-field select:hover {
   background: #eef2f7;
 }
 
 .premium-field input:focus,
+.premium-field textarea:focus,
 .premium-field select:focus {
   border-color: rgba(6, 182, 212, 0.45);
   background: #ffffff;
@@ -127,6 +187,109 @@ a {
   color: #dc2626;
   font-size: 0.78rem;
   font-weight: 600;
+}
+
+motus-phone-number-input {
+  display: block;
+  min-width: 0;
+}
+
+.phone-input-shell {
+  display: flex;
+  min-height: 56px;
+  min-width: 0;
+  align-items: center;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 18px;
+  background: #f4f6f8;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.phone-input-shell:focus-within {
+  border-color: rgba(6, 182, 212, 0.45);
+  background: #ffffff;
+  box-shadow: 0 0 0 5px rgba(6, 182, 212, 0.12);
+}
+
+.phone-input-shell-disabled {
+  opacity: 0.72;
+}
+
+.premium-field .phone-number-field {
+  min-height: 54px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.phone-fixed-prefix {
+  display: grid;
+  min-height: 54px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-right: 1px solid rgba(203, 213, 225, 0.72);
+  padding: 0 0.9rem 0 1rem;
+  color: #475569;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.premium-field .phone-number-field {
+  flex: 1;
+  min-width: 0;
+  padding: 0 1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.premium-field .phone-number-field:hover,
+.premium-field .phone-number-field:focus {
+  background: transparent;
+  box-shadow: none;
+}
+
+.premium-ride-indicator {
+  display: flex;
+  min-height: 56px;
+  min-width: 0;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid rgba(6, 182, 212, 0.24);
+  border-radius: 18px;
+  background:
+    linear-gradient(135deg, rgba(236, 254, 255, 0.92), rgba(239, 246, 255, 0.92)),
+    #f4f6f8;
+  padding: 0 18px;
+  color: #0f172a;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+.premium-ride-indicator-icon {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--motus-cyan);
+  font-size: 0.95rem;
+  box-shadow: 0 10px 24px rgba(6, 182, 212, 0.16);
+}
+
+.premium-ride-indicator-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.98rem;
+  font-weight: 700;
 }
 
 .premium-primary-button {
@@ -145,6 +308,7 @@ a {
 }
 
 .fare-card {
+  min-width: 0;
   margin-top: 0.5rem;
   border: 1px solid rgba(226, 232, 240, 0.9);
   border-radius: 22px;
@@ -154,6 +318,53 @@ a {
   box-shadow: 0 18px 54px rgba(15, 23, 42, 0.08);
   padding: 18px;
   animation: fareReveal 280ms ease-out both;
+}
+
+.fare-route {
+  display: grid;
+  min-width: 0;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  color: var(--motus-muted);
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.fare-route-stop {
+  min-width: 0;
+}
+
+.fare-route-label {
+  display: block;
+  margin-bottom: 0.18rem;
+  color: #94a3b8;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.fare-route-address {
+  min-width: 0;
+  margin: 0;
+}
+
+.fareAddress {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.5;
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+.fare-route-arrow {
+  color: #cbd5e1;
+  line-height: 1;
 }
 
 .map-shell {
@@ -182,6 +393,24 @@ a {
   box-shadow: 0 22px 70px rgba(15, 23, 42, 0.14);
   padding: 18px;
   backdrop-filter: blur(18px);
+}
+
+.mapRouteCard {
+  min-width: 0;
+}
+
+.mapRouteCard * {
+  min-width: 0;
+}
+
+.mapRouteAddress {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.35;
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 
 .map-marker {
@@ -318,6 +547,19 @@ a {
 @media (max-width: 640px) {
   .booking-card {
     padding: 20px;
+  }
+
+  .premium-field textarea {
+    max-height: 8.5rem;
+    font-size: 0.95rem;
+  }
+
+  .fare-card {
+    padding: 16px;
+  }
+
+  .fare-route {
+    font-size: 0.88rem;
   }
 
   .map-shell {
