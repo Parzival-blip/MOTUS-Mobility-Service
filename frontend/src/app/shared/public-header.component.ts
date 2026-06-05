@@ -1,4 +1,5 @@
-import { Component, HostListener, OnInit, inject } from "@angular/core";
+import { isPlatformBrowser } from "@angular/common";
+import { Component, HostListener, OnInit, PLATFORM_ID, inject } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { MatButtonModule } from "@angular/material/button";
 import { AuthService } from "../core/auth.service";
@@ -9,7 +10,7 @@ import { AuthService } from "../core/auth.service";
   imports: [RouterLink, MatButtonModule],
   template: `
     <header
-      class="public-header fixed inset-x-0 top-0 z-50 border-b border-transparent transition-all duration-300"
+      class="public-header fixed inset-x-0 top-0 z-[70] border-b border-transparent transition-all duration-300"
       [class.public-header--scrolled]="isScrolled"
     >
       <nav class="mx-auto flex h-[68px] max-w-[1180px] items-center justify-between px-4 text-slate-950 sm:h-[72px] sm:px-6">
@@ -24,11 +25,11 @@ import { AuthService } from "../core/auth.service";
           <a routerLink="/login" class="transition hover:text-slate-950">Bulk booking</a>
         </div>
 
-        <div class="flex items-center gap-2 sm:gap-3">
+        <div class="flex min-w-0 items-center gap-2 sm:gap-3">
           @if (auth.isAuthenticated()) {
-            <a mat-button routerLink="/app/dashboard" class="!hidden sm:!inline-flex">Dashboard</a>
+            <a mat-button routerLink="/app/dashboard" class="!h-10 !min-w-0 !px-3 !text-slate-950 sm:!px-4">Dashboard</a>
           } @else {
-            <a mat-stroked-button routerLink="/login" class="!h-10 !border-slate-200 !px-4 !text-slate-950">Login</a>
+            <a mat-stroked-button routerLink="/login" class="!h-10 !min-w-0 !border-slate-200 !px-3 !text-slate-950 sm:!px-4">Login</a>
           }
           <span class="flex w-[92px] justify-end sm:w-[124px]" aria-hidden="false">
             <a
@@ -54,6 +55,7 @@ import { AuthService } from "../core/auth.service";
   `
 })
 export class PublicHeaderComponent implements OnInit {
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   readonly auth = inject(AuthService);
   hideBookNow = true;
   isScrolled = false;
@@ -73,6 +75,12 @@ export class PublicHeaderComponent implements OnInit {
   }
 
   private updateHeaderState(): void {
+    if (!this.isBrowser) {
+      this.hideBookNow = false;
+      this.isScrolled = true;
+      return;
+    }
+
     const isHome = window.location.pathname === "/" || window.location.pathname === "";
     const isFirstHeroScreen = isHome && window.scrollY < window.innerHeight * 0.72;
 

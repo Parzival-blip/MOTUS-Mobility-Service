@@ -71,6 +71,53 @@ a {
   box-shadow: 0 28px 90px rgba(15, 23, 42, 0.1);
 }
 
+.enterprise-card,
+.metric-card {
+  min-width: 0;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 22px 70px rgba(15, 23, 42, 0.06);
+}
+
+.metric-card {
+  padding: 1.25rem;
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--motus-blue);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.mobile-table-scroll {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.mobile-table-scroll:focus {
+  outline: 2px solid rgba(47, 125, 246, 0.45);
+  outline-offset: 4px;
+}
+
+.mobile-table-scroll table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.mobile-table-scroll th,
+.mobile-table-scroll td {
+  white-space: nowrap;
+}
+
 .routeContent {
   flex: 1;
   min-width: 0;
@@ -545,6 +592,24 @@ motus-phone-number-input {
 }
 
 @media (max-width: 640px) {
+  body {
+    overflow-x: hidden;
+  }
+
+  .enterprise-card,
+  .metric-card {
+    border-radius: 24px;
+  }
+
+  .metric-card {
+    padding: 1rem;
+  }
+
+  .mobile-table-scroll {
+    margin-inline: -0.25rem;
+    padding-inline: 0.25rem;
+  }
+
   .booking-card {
     padding: 20px;
   }
