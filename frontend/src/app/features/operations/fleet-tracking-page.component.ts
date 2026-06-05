@@ -11,7 +11,7 @@ import { PlatformDataService } from "../../core/platform-data.service";
       <section class="enterprise-card p-6">
         <p class="eyebrow">Live tracking</p>
         <h2 class="mt-2 text-3xl font-black">GPS fleet map and route progress</h2>
-        <div class="relative mt-6 h-[460px] overflow-hidden rounded-[30px] bg-[#071525]">
+        <div class="relative mt-6 h-[320px] overflow-hidden rounded-[30px] bg-[#071525] sm:h-[460px]">
           <div class="absolute inset-0 opacity-30" style="background-image: linear-gradient(#2f7df6 1px, transparent 1px), linear-gradient(90deg, #2f7df6 1px, transparent 1px); background-size: 46px 46px;"></div>
           @for (pin of pins; track pin.unit) {
             <div class="absolute rounded-full bg-cyanops p-2 shadow-lg shadow-cyan-500/30" [style.left.%]="pin.x" [style.top.%]="pin.y">
@@ -22,17 +22,19 @@ import { PlatformDataService } from "../../core/platform-data.service";
         </div>
       </section>
 
-      <section class="enterprise-card overflow-hidden p-6">
+      <section class="enterprise-card overflow-hidden p-4 sm:p-6">
         <p class="eyebrow">Vehicle status</p>
         <h2 class="mb-5 mt-2 text-3xl font-black">Allocation, occupancy, and maintenance</h2>
-        <table mat-table [dataSource]="data.vehicles" class="w-full">
-          <ng-container matColumnDef="unit"><th mat-header-cell *matHeaderCellDef>Unit</th><td mat-cell *matCellDef="let row">{{ row.unit }}</td></ng-container>
-          <ng-container matColumnDef="category"><th mat-header-cell *matHeaderCellDef>Category</th><td mat-cell *matCellDef="let row">{{ row.category }}</td></ng-container>
-          <ng-container matColumnDef="occupancy"><th mat-header-cell *matHeaderCellDef>Occupancy</th><td mat-cell *matCellDef="let row">{{ row.occupancy }}</td></ng-container>
-          <ng-container matColumnDef="status"><th mat-header-cell *matHeaderCellDef>Status</th><td mat-cell *matCellDef="let row">{{ row.status }}</td></ng-container>
-          <tr mat-header-row *matHeaderRowDef="columns"></tr>
-          <tr mat-row *matRowDef="let row; columns: columns"></tr>
-        </table>
+        <div class="mobile-table-scroll" tabindex="0" aria-label="Vehicle status table">
+          <table mat-table [dataSource]="data.vehicles" class="w-full min-w-[36rem]">
+            <ng-container matColumnDef="unit"><th mat-header-cell *matHeaderCellDef>Unit</th><td mat-cell *matCellDef="let row">{{ row.unit }}</td></ng-container>
+            <ng-container matColumnDef="category"><th mat-header-cell *matHeaderCellDef>Category</th><td mat-cell *matCellDef="let row">{{ row.category }}</td></ng-container>
+            <ng-container matColumnDef="occupancy"><th mat-header-cell *matHeaderCellDef>Occupancy</th><td mat-cell *matCellDef="let row">{{ row.occupancy }}</td></ng-container>
+            <ng-container matColumnDef="status"><th mat-header-cell *matHeaderCellDef>Status</th><td mat-cell *matCellDef="let row">{{ row.status }}</td></ng-container>
+            <tr mat-header-row *matHeaderRowDef="columns"></tr>
+            <tr mat-row *matRowDef="let row; columns: columns"></tr>
+          </table>
+        </div>
       </section>
     </div>
   `

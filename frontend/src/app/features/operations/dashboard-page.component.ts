@@ -48,18 +48,20 @@ import { PlatformDataService } from "../../core/platform-data.service";
         </article>
       </section>
 
-      <section class="enterprise-card overflow-hidden p-6">
+      <section class="enterprise-card overflow-hidden p-4 sm:p-6">
         <p class="eyebrow">Live booking operations</p>
         <h2 class="mb-5 mt-2 text-2xl font-black">Enterprise transport work orders</h2>
-        <table mat-table [dataSource]="data.bookings" class="w-full">
-          <ng-container matColumnDef="id"><th mat-header-cell *matHeaderCellDef>Booking</th><td mat-cell *matCellDef="let row">{{ row.id }}</td></ng-container>
-          <ng-container matColumnDef="department"><th mat-header-cell *matHeaderCellDef>Department</th><td mat-cell *matCellDef="let row">{{ row.department }}</td></ng-container>
-          <ng-container matColumnDef="route"><th mat-header-cell *matHeaderCellDef>Route</th><td mat-cell *matCellDef="let row"><span class="addressSingleLine">{{ row.route }}</span></td></ng-container>
-          <ng-container matColumnDef="passengers"><th mat-header-cell *matHeaderCellDef>Passengers</th><td mat-cell *matCellDef="let row">{{ row.passengers }}</td></ng-container>
-          <ng-container matColumnDef="status"><th mat-header-cell *matHeaderCellDef>Status</th><td mat-cell *matCellDef="let row">{{ row.status }}</td></ng-container>
-          <tr mat-header-row *matHeaderRowDef="columns"></tr>
-          <tr mat-row *matRowDef="let row; columns: columns"></tr>
-        </table>
+        <div class="mobile-table-scroll" tabindex="0" aria-label="Enterprise transport work orders table">
+          <table mat-table [dataSource]="data.bookings" class="w-full min-w-[42rem]">
+            <ng-container matColumnDef="id"><th mat-header-cell *matHeaderCellDef>Booking</th><td mat-cell *matCellDef="let row">{{ row.id }}</td></ng-container>
+            <ng-container matColumnDef="department"><th mat-header-cell *matHeaderCellDef>Department</th><td mat-cell *matCellDef="let row">{{ row.department }}</td></ng-container>
+            <ng-container matColumnDef="route"><th mat-header-cell *matHeaderCellDef>Route</th><td mat-cell *matCellDef="let row"><span class="addressSingleLine">{{ row.route }}</span></td></ng-container>
+            <ng-container matColumnDef="passengers"><th mat-header-cell *matHeaderCellDef>Passengers</th><td mat-cell *matCellDef="let row">{{ row.passengers }}</td></ng-container>
+            <ng-container matColumnDef="status"><th mat-header-cell *matHeaderCellDef>Status</th><td mat-cell *matCellDef="let row">{{ row.status }}</td></ng-container>
+            <tr mat-header-row *matHeaderRowDef="columns"></tr>
+            <tr mat-row *matRowDef="let row; columns: columns"></tr>
+          </table>
+        </div>
       </section>
     </div>
   `

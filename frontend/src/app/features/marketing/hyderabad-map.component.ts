@@ -156,6 +156,15 @@ export class HyderabadMapComponent implements OnChanges {
       this.routeMetrics.emit(this.metrics);
     } catch {
       const fallback = this.createFallbackMetrics();
+      const bbox = this.createBBox([this.defaultPickup, this.defaultDrop]);
+
+      this.mapUrl = this.createMapUrl(bbox, this.defaultPickup, this.defaultDrop);
+      this.pickupPosition = this.project(this.defaultPickup, bbox);
+      this.dropPosition = this.project(this.defaultDrop, bbox);
+      this.routePath = [this.defaultPickup, this.defaultDrop].map((point) => {
+        const projected = this.project(point, bbox);
+        return `${projected.x.toFixed(2)},${projected.y.toFixed(2)}`;
+      }).join(" ");
       this.metrics = fallback;
       this.routeMetrics.emit(fallback);
     } finally {
@@ -172,6 +181,10 @@ export class HyderabadMapComponent implements OnChanges {
     }
 
     const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=in&q=${encodeURIComponent(`${query}, Hyderabad`)}`);
+    if (!response.ok) {
+      throw new Error("Location lookup unavailable");
+    }
+
     const results = await response.json() as Array<{ lat: string; lon: string }>;
 
     if (!results.length) {
@@ -183,6 +196,10 @@ export class HyderabadMapComponent implements OnChanges {
 
   private async fetchRoute(start: Coordinate, end: Coordinate): Promise<{ distanceKm: number; durationMin: number; points: Coordinate[]; source: RouteMetrics["source"] }> {
     const response = await fetch(`https://router.project-osrm.org/route/v1/driving/${start.lng},${start.lat};${end.lng},${end.lat}?overview=full&geometries=geojson`);
+    if (!response.ok) {
+      throw new Error("Route service unavailable");
+    }
+
     const json = await response.json() as {
       routes?: Array<{ distance: number; duration: number; geometry: { coordinates: Array<[number, number]> } }>;
     };
